@@ -24,6 +24,7 @@ TLS-SE device for IoT provides a serial interface with a TLS-SE javacard.
 Device firmware integrity is checked by remote attestation algorithm (bMAC).
 https://github.com/purien/bMAC/blob/master/README.md
 Device MCU is identified by static and dynamic PUF.
+https://github.com/purien/DynamicPuf/blob/master/README.md
 
 
 ![TLS-SE Device](https://github.com/purien/TLS-SE/blob/master/tls_se_device.jpg)

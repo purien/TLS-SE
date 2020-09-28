@@ -18,3 +18,4 @@ The command file openssl_client_tls13_psk.bat runs an openssl TLS1.3 client.
 
 The command file make_tls_se_304.bat compile tls-se.java and produces the tlsse.cap file. It requires a java compiler (JDK 1.6) and an oracle javacard 3.04 dev kit.
 
+![TLS_IM Device](https://github.com/purien/TLS-SE/blob/master/tls_im_device.jpg)

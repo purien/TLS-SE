@@ -17,5 +17,6 @@ This command file  starts a TLS-SE server (i.e. servertlsse.jar)
 This command file runs an openssl TLS1.3 client.
 ### make_tls_se_304.bat
 This command file compiles tls-se.java and produces the tlsse.cap file. It requires a java compiler (JDK 1.6) and an oracle javacard 3.04 dev kit.
-
+### TLS-SE device for IoT
+TLS-SE device for IoT provides a serial interface with a TLS-SE javacard. Firmware integrity is checked by remote attestation algorithm (bMAC). MCU is identified by static and dynamic PUF.
 ![TLS-SE Device](https://github.com/purien/TLS-SE/blob/master/tls_se_device.jpg)

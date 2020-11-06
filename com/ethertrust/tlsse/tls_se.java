@@ -3,9 +3,7 @@
 /* Copyright (C) 2020 Pascal Urien (pascal.urien@gmail.com)
  * All rights reserved.
  *
- * This software is an implementation of TLS13 Secure Element (TLS-SE) 
- * for Javacard 3.0.4
- * https://datatracker.ietf.org/doc/draft-urien-tls-se/
+ * This software is an implementation of TLS13 SEcure Element in Javacard 3.0.4
  * 
  * This software is free use as long as the following conditions are aheared to.  
  * The following conditions apply to all code found in this distribution.
@@ -27,7 +25,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *    "This product includes TLS-SE software written by
+ *    "This product includes CryptoCurrency (CC) software written by
  *     Pascal Urien (pascal.urien@gmail.com)"
  * 
  * THIS SOFTWARE IS PROVIDED BY PASCAL URIEN ``AS IS'' AND
@@ -49,10 +47,10 @@
  */
 
 ////////////////////////
-// tls_se Version 1.0 //
+// tls_se Version 1.1 //
 ////////////////////////
 
-package com.ethertrust.tlsse;
+package com.ethertrust.tlsse ;
 
 import javacard.framework.*;
 import javacard.security.* ;
@@ -84,7 +82,7 @@ public class tls_se extends Applet
 	public final static byte INS_CHANGE_PIN = (byte) 0x24 ;
 	
 	public final static short N_KEYS     = (short) 4;
-	public final static byte[] VERSION= {(byte)1,(byte)0};
+	public final static byte[] VERSION= {(byte)1,(byte)1};
 	
 	KeyPair[] ECCkp       = null  ;
 	Signature ECCsig      = null  ;
@@ -387,10 +385,13 @@ void tls(APDU apdu,byte[]buffer)
 
 void seq_inc(boolean chtx)
 { byte msb, lsb;
-  short v;
-  
+   
 if (chtx)	
 {
+msb =(byte)((short)0xFF & VS[SEQ1]>>8 );
+lsb =(byte)((short)0xFF & VS[SEQ1]);
+DB[(short)(DB_IV1+10)] ^= msb;
+DB[(short)(DB_IV1+11)] ^= lsb;
 VS[SEQ1]++;
 msb =(byte)((short)0xFF & VS[SEQ1]>>8 );
 lsb =(byte)((short)0xFF & VS[SEQ1]);
@@ -399,6 +400,10 @@ DB[(short)(DB_IV1+11)] ^= lsb;
 }
 else
 {
+msb =(byte)((short)0xFF & VS[SEQ2]>>8 );
+lsb =(byte)((short)0xFF & VS[SEQ2]);
+DB[(short)(DB_IV2+10)] ^= msb;
+DB[(short)(DB_IV2+11)] ^= lsb;	
 VS[SEQ2]++;
 msb =(byte)((short)0xFF & VS[SEQ2]>>8 );
 lsb =(byte)((short)0xFF & VS[SEQ2]);
@@ -2126,6 +2131,43 @@ public void process(APDU apdu) throws ISOException
 	    apdu.setOutgoingAndSend((short)(5+len),len2);
 	    break;
 	         
+	    case INS_INIT_CURVE:  // Init Curve
+        	
+        if ( !AdminPin.isValidated()) 
+		ISOException.throwIt(SW_PIN_VERIFICATION_REQUIRED);	
+            	
+     	index= Util.makeShort((byte)0,P2);
+			
+		if ( (index <0) || (index >= N_KEYS))
+		ISOException.throwIt(ISO7816.SW_CONDITIONS_NOT_SATISFIED);
+			
+		if ( (P1 == (byte)6) && ECCkp[index].getPublic().isInitialized() )
+   	    ISOException.throwIt(SW_KPUB_DEFINED);
+			
+	    if ((P1 == (byte)7) && ECCkp[index].getPrivate().isInitialized())
+	    ISOException.throwIt(SW_KPRIV_DEFINED);
+	    
+	    ((ECPublicKey)ECCkp[index].getPublic()).setA(ParamA1,(short)0,(short)ParamA1.length) ;
+		((ECPrivateKey)ECCkp[index].getPrivate()).setA(ParamA1,(short)0,(short)ParamA1.length);
+		
+		((ECPublicKey)ECCkp[index].getPublic()).setB(ParamB1,(short)0,(short)ParamB1.length) ;
+	    ((ECPrivateKey)ECCkp[index].getPrivate()).setB(ParamB1,(short)0,(short)ParamB1.length);
+					  
+	    ((ECPublicKey)ECCkp[index].getPublic()).setFieldFP(ParamField1,(short)0,(short)ParamField1.length) ;
+	    ((ECPrivateKey)ECCkp[index].getPrivate()).setFieldFP(ParamField1,(short)0,(short)ParamField1.length);
+					   
+		((ECPublicKey)ECCkp[index].getPublic()).setG(ParamG1,(short)0,(short)ParamG1.length) ;
+		((ECPrivateKey)ECCkp[index].getPrivate()).setG(ParamG1,(short)0,(short)ParamG1.length);
+			 		   
+		((ECPublicKey)ECCkp[index].getPublic()).setK(ParamK1) ;
+	    ((ECPrivateKey)ECCkp[index].getPrivate()).setK(ParamK1);
+					  
+		((ECPublicKey)ECCkp[index].getPublic()).setR(ParamR1,(short)0,(short)ParamR1.length) ;
+	    ((ECPrivateKey)ECCkp[index].getPrivate()).setR(ParamR1,(short)0,(short)ParamR1.length);
+	      
+        break;
+	    
+	    
 	    case INS_RND:
 	         if (rng == null)
 		   	 ISOException.throwIt(ISO7816.SW_CONDITIONS_NOT_SATISFIED);
@@ -2133,6 +2175,8 @@ public void process(APDU apdu) throws ISOException
 		   	 rng.generateData(buffer,(short)0,len);
 	    	 apdu.setOutgoingAndSend((short)0,len);
 	    	 break;
+	    	 
+	    	 
   
 	     default:  
 		 ISOException.throwIt(ISO7816.SW_INS_NOT_SUPPORTED);			
@@ -2234,7 +2278,7 @@ public void process(APDU apdu) throws ISOException
 	for (i=0;i<r;i++) out[(short)(out_off+(n<<4)+i)]= (byte)(in[(short)(in_off+(n<<4)+i)] ^ DB[i] )   ;
 
     // compute tag
-    DB[16]= 0x7A;
+    DB[16]= (byte)0x7A;
 	DB[29]=0 ; // 29=13+16, 30=14+16
 	DB[30] = (byte)((in_len>>8) & 0xFF);
 	DB[31] = (byte)(in_len & 0xFF);
@@ -2286,7 +2330,7 @@ public void process(APDU apdu) throws ISOException
     
     if (auth_len> (short)14) return (short)-1;
    
-    DB[16]= 0x7A;
+    DB[16]= (byte)0x7A;
 	for(i=0;i<12;i++) DB[(short)(17+i)] = nonce[(short)(nonce_off+i)];
 	DB[29]=0 ; // 29=13+16, 30=14+16
 	DB[30] = (byte)((in_len>>8) & 0xFF);
@@ -2409,13 +2453,14 @@ ECCkp[index].getPrivate().clearKey();
 ((ECPublicKey)ECCkp[index].getPublic()).setFieldFP(ParamField1,(short)0,(short)ParamField1.length) ;
 ((ECPublicKey)ECCkp[index].getPublic()).setG(ParamG1,(short)0,(short)ParamG1.length) ;
 ((ECPublicKey)ECCkp[index].getPublic()).setK(ParamK1) ;
+((ECPublicKey)ECCkp[index].getPublic()).setR(ParamR1,(short)0,(short)ParamR1.length);
 //Private
 ((ECPrivateKey)ECCkp[index].getPrivate()).setA(ParamA1,(short)0,(short)ParamA1.length);
 ((ECPrivateKey)ECCkp[index].getPrivate()).setB(ParamB1,(short)0,(short)ParamB1.length);
 ((ECPrivateKey)ECCkp[index].getPrivate()).setFieldFP(ParamField1,(short)0,(short)ParamField1.length);
 ((ECPrivateKey)ECCkp[index].getPrivate()).setG(ParamG1,(short)0,(short)ParamG1.length);
 ((ECPrivateKey)ECCkp[index].getPrivate()).setK(ParamK1);
- ((ECPrivateKey)ECCkp[index].getPrivate()).setR(ParamR1,(short)0,(short)ParamR1.length);
+((ECPrivateKey)ECCkp[index].getPrivate()).setR(ParamR1,(short)0,(short)ParamR1.length);
 
 try
 { ECCkp[index].genKeyPair();} 
@@ -2524,7 +2569,7 @@ return 0;
     AdminPin.reset();
     reset_tls();
     // This method shall not be invoked from the Applet.install() method
-    //org.globalplatform.GPSystem.setATRHistBytes(HistByteArray,(short)0,(byte)HistByteArray.length);
+    // org.globalplatform.GPSystem.setATRHistBytes(HistByteArray,(short)0,(byte)HistByteArray.length);
     return true;
   }
   
@@ -2541,3 +2586,7 @@ return 0;
 
 
 }
+
+
+
+

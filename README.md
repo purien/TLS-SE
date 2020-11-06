@@ -19,6 +19,12 @@ This command file runs an openssl TLS1.3 client.
 This command file compiles tls-se.java and produces the tlsse.cap file. 
 It requires a java compiler (JDK 1.6) and an oracle javacard 3.04 dev kit.
 Javacard dev kit: https://www.oracle.com/java/technologies/javacard-sdk-downloads.html
+### im.java
+The TLS-IM implementation in javacard, of the the IETF draft https://tools.ietf.org/html/draft-urien-tls-im-00
+### make_im
+This command file compiles im.java and produces the im.cap file. 
+### load_im.bat
+This command file downloads the IM capfile (im.cap) in a Javacard
 ### TLS-SE device for IoT
 TLS-SE device for IoT provides a serial interface with a TLS-SE javacard. 
 Device firmware integrity is checked by remote attestation algorithm (bMAC).

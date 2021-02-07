@@ -25,6 +25,8 @@ The TLS-IM implementation in javacard, of the the IETF draft https://tools.ietf.
 This command file compiles im.java and produces the im.cap file. 
 ### load_im.bat
 This command file downloads the IM capfile (im.cap) in a Javacard
+### i2c_v1.ino
+This Arduino sketch implements all procedure required by the TLS-IM draft. It has been tested with Arduino Uno R3, Arduino ATMEGA2560 and ESP8266.
 ### TLS-SE device for IoT
 TLS-SE device for IoT provides a serial interface with a TLS-SE javacard. 
 Device firmware integrity is checked by remote attestation algorithm (bMAC).
@@ -34,3 +36,18 @@ https://github.com/purien/DynamicPuf/blob/master/README.md
 
 
 ![TLS-SE Device](https://github.com/purien/TLS-SE/blob/master/tls_se_device.jpg)
+
+### TLS-IM-SE Javacard Board
+This board designed with EAGLE implements a TLS1.3 server using a javacard according to draft TLS-IM and TLS-SE
+
+![TLS-IM-SE Javacard Board](https://github.com/purien/TLS-SE/blob/master/tls-im-se-javacard_board.jpg)
+
+### TLS-IM
+This board implements a TLS1.3 server using a NXP SE050 secure element
+
+![TLS-IM SE050 Board](https://github.com/purien/TLS-SE/blob/master/tls-im_SE050_board.jpg)
+
+
+
+
+

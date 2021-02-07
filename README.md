@@ -34,7 +34,6 @@ https://github.com/purien/bMAC/blob/master/README.md
 Device MCU is identified by static and dynamic PUF.
 https://github.com/purien/DynamicPuf/blob/master/README.md
 
-
 ![TLS-SE Device](https://github.com/purien/TLS-SE/blob/master/tls_se_device.jpg)
 
 ### TLS-IM-SE Javacard Board
@@ -42,7 +41,7 @@ This board designed with EAGLE implements a TLS1.3 server using a javacard accor
 
 ![TLS-IM-SE Javacard Board](https://github.com/purien/TLS-SE/blob/master/tls-im-se-javacard_board.jpg)
 
-### TLS-IM
+### TLS-IM SE050 Board
 This board implements a TLS1.3 server using a NXP SE050 secure element
 
 ![TLS-IM SE050 Board](https://github.com/purien/TLS-SE/blob/master/tls-im_SE050_board.jpg)

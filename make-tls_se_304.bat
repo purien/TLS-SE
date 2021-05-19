@@ -1,10 +1,9 @@
 set JC=C:\vaio\jc304
 set JDK=C:\jdk1.6.0_03
-set GP211=.\gp211
+set GP221=.\gp221
 
 set _CLASSES=%JC%\lib\api_classic.jar
-set  CLASSPATH=%JDK%\lib;%GP211%\gp211.jar;%_CLASSES%
-
+set  CLASSPATH=%JDK%\lib;%GP221%\gp221.jar;%_CLASSES%
 
 %JDK%\bin\javac.exe .\com\ethertrust\tlsse\tls_se.java -classpath %CLASSPATH% 
 
@@ -24,7 +23,9 @@ set JC_CLASSPATH=%JC%\lib\tools.jar;%JC_CLASSPATH%
 set JC_CLASSPATH=%JC%\lib\api_classic.jar;%JC_CLASSPATH%
 
 
-%JDK%\bin\java -Djc.home=%JC% -classpath %JC_CLASSPATH% com.sun.javacard.converter.Main -classdir . -exportpath %JC%\api_export_files;%GP211% -i -out EXP CAP -applet 0x01:0x02:0x03:0x04:0x05:0x00  com.ethertrust.tlsse.tls_se  com.ethertrust.tlsse  0x01:0x02:0x03:0x04:0x05 1.0
+%JDK%\bin\java -Djc.home=%JC% -classpath %JC_CLASSPATH% com.sun.javacard.converter.Main -classdir . -exportpath %JC%\api_export_files;%GP221% -i -out EXP CAP -applet 0x01:0x02:0x03:0x04:0x05:0x00  com.ethertrust.tlsse.tls_se  com.ethertrust.tlsse  0x01:0x02:0x03:0x04:0x05 1.0
+
+copy  .\com\ethertrust\tlsse\javacard\tlsse.cap  .\tlsse.cap
 
 PAUSE
 

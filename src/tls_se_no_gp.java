@@ -25,7 +25,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *    "This product includes TLS-SE software written by
+ *    "This product includes CryptoCurrency (CC) software written by
  *     Pascal Urien (pascal.urien@gmail.com)"
  * 
  * THIS SOFTWARE IS PROVIDED BY PASCAL URIEN ``AS IS'' AND
@@ -46,9 +46,9 @@
  * [including the GNU Public Licence.]
  */
 
-/////////////////////////
-// tls_se Version 1.11 //
-/////////////////////////
+////////////////////////
+// tls_se Version 1.1 //
+////////////////////////
 
 package com.ethertrust.tlsse ;
 
@@ -257,15 +257,12 @@ public class tls_se extends Applet
 	AESKey      key2=null;
 	Cipher      cipher2=null;
 	
-    public static byte[] HistByteArray = { (byte)'e',(byte)'t',(byte)'h',(byte)'e',(byte)'r',
-                                           (byte)'t',(byte)'r',(byte)'u',(byte)'s',(byte)'t'};// assign to Historical Bytes
+    public static byte[] HistByteArray = { (byte) 0x01, (byte) 0x02,
+                                           (byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07,
+                                           (byte) 0x08, (byte) 0x09, (byte) 0x0a,
+                                           (byte)0x0b, (byte)0x0c,(byte)0x0d,(byte)0x0e,(byte)0x0f };// assign 0102030405060708090A to Historical Bytes
 
-	public static  byte[] mypsk  = {(byte)1,(byte)2,(byte)3,(byte)4,(byte)5,(byte)6,(byte)7,(byte)8,
-                                    (byte)9,(byte)10,(byte)11,(byte)12,(byte)13,(byte)14,(byte)15,(byte)16,
-                                    (byte)17,(byte)18,(byte)19,(byte)20,(byte)21,(byte)22,(byte)23,(byte)24,
-                                    (byte)25,(byte)26,(byte)27,(byte)28,(byte)29,(byte)30,(byte)31,(byte)32};
-  
-	public static byte[] quit= {(byte)'q',(byte)'u',(byte)'i',(byte)'t',(byte)0xd,(byte)0xa};
+	
 
 void reset_tls()
 {  short i;
@@ -277,7 +274,6 @@ void reset_tls()
 void tls(APDU apdu,byte[]buffer)
 { boolean stat;
   short err   ;
-  boolean toquit=false;
     
   while(true)
   {
@@ -360,9 +356,7 @@ void tls(APDU apdu,byte[]buffer)
 		err = tls_write();
 		    
 		else
-		{ err = test_rx();
-		  if (err < (short)-1) {toquit=true; err= (short)-err;}
-		}
+		err = test_rx();
 					
 		if (err <0)
 		{reset_tls();
@@ -377,12 +371,9 @@ void tls(APDU apdu,byte[]buffer)
 		send(apdu,buffer,(short)0x9000);	
 		}
 		else
-		{ 
-		if (!toquit) send(apdu,buffer,(short)0x9000);
-		else 
-		{VS[STATE] = S_READY;
-		 send(apdu,buffer,SW_TLS_END);
-		}
+		{
+		VS[STATE] = S_READY;
+		send(apdu,buffer,SW_TLS_END);
 		}
  
  		break;
@@ -1047,11 +1038,10 @@ boolean CheckClientChangeCipherSpec()
 
 short test_rx()
 { short len,err;
-  boolean squit=false;
 
   len = Util.getShort(RX,(short)3);
   if (len < (short)16)
-  	return (short)-1;
+  	return -1;
   
   err = aesccm_decrypt(cipher2,RX,(short)5,(short)(len-16),
 					   DB,DB_IV2,
@@ -1060,8 +1050,8 @@ short test_rx()
 					   RX,(short)(5+len-16));
  seq_inc(false);
  
- if (err < (short)0)
- 	return (short)-1;
+ if (err < 0)
+ 	return -1;
  	
  if (RX[(short)(5+err-1)] != (byte)0x17)
  	return -1;
@@ -1071,19 +1061,8 @@ short test_rx()
  {
    Util.arrayCopyNonAtomic(tls_resp,(short)0,RX,(short)5,(short)tls_resp.length);
    len= (short)(tls_resp.length + 1);
-   RX[(short)(5+len-1)] = (byte)0x17;
-   squit=true; 
- }	
- 
-  else if (((short)quit.length == (short)(err-1))	&&
- (Util.arrayCompare(RX,(short)5,quit,(short)0,(short)(err-1)) == (byte)0))
- {
-   Util.arrayCopyNonAtomic(quit,(short)0,RX,(short)5,(short)quit.length);
-   len= (short)(quit.length + 1)    ;
    RX[(short)(5+len-1)] = (byte)0x17; 
-   squit=true;
- }
- 
+ }	
  else 
  len= err;	
  
@@ -1099,8 +1078,7 @@ short test_rx()
 					  RX,(short)5,
 					  RX,(short)(5+len));
 seq_inc(true);					  
-if (squit) 
-	return (short)-err;
+
 return err;	
 }
 
@@ -1563,8 +1541,8 @@ public void process(APDU apdu) throws ISOException
      	if (len != readCount)
      	ISOException.throwIt(ISO7816.SW_WRONG_LENGTH); 
      	
-      	// if ( (!AdminPin.isValidated()) && (!UserPin.isValidated()) )
-		// ISOException.throwIt(SW_PIN_VERIFICATION_REQUIRED);
+      	if ( (!AdminPin.isValidated()) && (!UserPin.isValidated()) )
+		ISOException.throwIt(SW_PIN_VERIFICATION_REQUIRED);
 		
 		if (len == (short)0)
 		{
@@ -2503,58 +2481,6 @@ return 0;
 		init();
         register();
 	}
-	
-
-void compute_psk(byte psk[],short off,short len, byte[] buffer)
-{	    
-	
-hmac(zero32,(short)0,(short)1,
-     psk,off,len,
-     sha256,
-     buffer,(short)0,true);
- 
- Util.arrayCopyNonAtomic(buffer,(short)0,ESK,(short)0,(short)ESK.length); 
-				 				 
- hmac(ESK,(short)0,(short)ESK.length,
-	  derived,(short)0,(short)derived.length,
-	  sha256,
-   	  buffer,(short)0,true);
-			
- Util.arrayCopyNonAtomic(buffer,(short)0,HSK,(short)0,(short)HSK.length);  
-
- hmac(ESK,(short)0,(short)ESK.length,
-	  ext_binder,(short)0,(short)ext_binder.length,
-	  sha256,
-	  buffer,(short)0,true);
-
- Util.arrayCopyNonAtomic(buffer,(short)0,eBSK,(short)0,(short)eBSK.length);  
-		
- hmac(ESK,(short)0,(short)ESK.length,
-	  res_binder,(short)0,(short)res_binder.length,
-	  sha256,
-	  buffer,(short)0,true);
-
- Util.arrayCopyNonAtomic(buffer,(short)0,rBSK,(short)0,(short)rBSK.length);  
-			
- hmac(eBSK,(short)0,(short)eBSK.length,
-	  finished,(short)0,(short)finished.length,
-	  sha256,
-	  buffer,(short)0,true);
-
- Util.arrayCopyNonAtomic(buffer,(short)0,feBSK,(short)0,(short)feBSK.length);  
-			
-  hmac(rBSK,(short)0,(short)rBSK.length,
-	   finished,(short)0,(short)finished.length,
-	   sha256,
-	   buffer,(short)0,true);
-			
- Util.arrayCopyNonAtomic(buffer,(short)0,frBSK,(short)0,(short)frBSK.length);  
-			
-
- 
-}
-
-
 
 	
 	public void init()
@@ -2628,8 +2554,6 @@ hmac(zero32,(short)0,(short)1,
      DB = JCSystem.makeTransientByteArray(DBSIZE,JCSystem.CLEAR_ON_DESELECT);
      RX = JCSystem.makeTransientByteArray(RXSIZE,JCSystem.CLEAR_ON_DESELECT);
      VS = JCSystem.makeTransientShortArray(VSSIZE,JCSystem.CLEAR_ON_DESELECT);
-     
-     compute_psk(mypsk,(short)0,(short)mypsk.length,DB);
 
 	}
   
@@ -2645,7 +2569,7 @@ hmac(zero32,(short)0,(short)1,
     AdminPin.reset();
     reset_tls();
     // This method shall not be invoked from the Applet.install() method
-    org.globalplatform.GPSystem.setATRHistBytes(HistByteArray,(short)0,(byte)HistByteArray.length);
+    // org.globalplatform.GPSystem.setATRHistBytes(HistByteArray,(short)0,(byte)HistByteArray.length);
     return true;
   }
   

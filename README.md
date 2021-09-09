@@ -41,10 +41,10 @@ This board designed with EAGLE implements a TLS1.3 server using a javacard accor
 
 ![TLS-IM-SE Javacard Board](https://github.com/purien/TLS-SE/blob/master/tls-im-se-javacard_board.jpg)
 
-### TLS-IM-SE Javacard I2C Bus Board
+### TLS-IM-SE Javacards I2C Bus Board
 This board designed with EAGLE implements a TLS1.3 server using a set of javacard over I2C bus according to draft TLS-SE
 
-![TLS-IM-SE Javacard Board](https://github.com/purien/TLS-SE/blob/master/grid_tls-se_i2c.jpg)
+![TLS-IM-SE Javacards I2C Board](https://github.com/purien/TLS-SE/blob/master/i2cgrid01s.jpg)
 
 ### TLS-IM SE050 Board
 This board implements a TLS1.3 server using a NXP SE050 secure element

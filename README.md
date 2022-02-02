@@ -3,10 +3,12 @@ TLS-SE is an implentation of TLS1.3 in Secure Element according to the IETF draf
 ### tls_se.java
 The TLS-SE implementation for javacard 3.04
 https://github.com/purien/TLS-SE/blob/master/src/tls_se.java
+### Ethereum Certificate for tls-se.java
+Tx= 0x5b7ee4d93cc93f9561b2c3e1d79447827df798de14e394ce484f9b7d6e8530fd nonce=20
+https://etherscan.io/tx/0x5b7ee4d93cc93f9561b2c3e1d79447827df798de14e394ce484f9b7d6e8530fd
 ### server.java 
 A simple TCP/IP demonstration server for TLS-SE
 https://github.com/purien/TLS-SE/blob/master/src/server.java
-Ethereum Certfificate for tls-se.java: Tx= 0x5b7ee4d93cc93f9561b2c3e1d79447827df798de14e394ce484f9b7d6e8530fd nonce=20
 ### load_tls_se_304.bat
 This command file   downloads the TLS-SE capfile (tlsse.cap) in a Javacard 3.04
 ### test_tls_se.bat

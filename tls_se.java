@@ -1,6 +1,6 @@
 /* tls_se.java */
 
-/* Copyright (C) 2020 Pascal Urien (pascal.urien@gmail.com)
+/* Copyright (C) 2020-2022 Pascal Urien (pascal.urien@gmail.com)
  * All rights reserved.
  *
  * This software is an implementation of TLS13 SEcure Element in Javacard 3.0.4
@@ -1719,7 +1719,7 @@ public void process(APDU apdu) throws ISOException
 			
  	      	else if (P2 == (byte)2) // Compute HMAC
 	    	{
-	    	len = Util.makeShort((byte)0,buffer[(short)5])      ;  // Longueur clé
+	    	len = Util.makeShort((byte)0,buffer[(short)5])      ;  // Longueur clÃ©
 	    		    	
 	    	hmac(buffer,(short)6,len,
 				 buffer,(short)(7+len),Util.makeShort((byte)0,buffer[(short)(6+len)]),

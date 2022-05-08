@@ -2322,10 +2322,12 @@ public void process(APDU apdu) throws ISOException
 	catch (CryptoException e){return -1;}
 	}
 	
-	for(i=0;i<r;i++)
-	DB[(short)(i)] ^= out[(short)(out_off+i+(n<<4))] ;
-	try{aes.doFinal(DB,(short)0,(short)16,DB,(short)0);}
-	catch (CryptoException e){return -1;}
+	if (r != (short)0)
+	{ for(i=0;i<r;i++)
+	  DB[(short)(i)] ^= out[(short)(out_off+i+(n<<4))] ;
+      try{aes.doFinal(DB,(short)0,(short)16,DB,(short)0);}
+	  catch (CryptoException e){return -1;}
+	}
 	
 	// TAG= DB[0...15]
     DB[16]= 2;
@@ -2379,10 +2381,12 @@ public void process(APDU apdu) throws ISOException
 	catch (CryptoException e){return -1;}
 	}
 	
-	for(i=0;i<r;i++)
-	DB[(short)(i)] ^= in[(short)(in_off+i+(n<<4))] ;
-	try{aes.doFinal(DB,(short)0,(short)16,DB,(short)0);}
-	catch (CryptoException e){return -1;}
+	if (r != (short)0)
+	{ for(i=0;i<r;i++)
+	  DB[(short)(i)] ^= in[(short)(in_off+i+(n<<4))] ;
+	  try{aes.doFinal(DB,(short)0,(short)16,DB,(short)0);}
+	  catch (CryptoException e){return -1;}
+	}
 	
 	for(i=0;i<(short)16;i++) tag[(short)(tag_off+i)] = DB[i] ;
 	
@@ -2645,7 +2649,7 @@ hmac(zero32,(short)0,(short)1,
     AdminPin.reset();
     reset_tls();
     // This method shall not be invoked from the Applet.install() method
-    org.globalplatform.GPSystem.setATRHistBytes(HistByteArray,(short)0,(byte)HistByteArray.length);
+    // org.globalplatform.GPSystem.setATRHistBytes(HistByteArray,(short)0,(byte)HistByteArray.length);
     return true;
   }
   

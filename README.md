@@ -37,6 +37,7 @@ Device MCU is identified by static and dynamic PUF.
 https://github.com/purien/DynamicPuf/blob/master/README.md
 
 ![TLS-SE Device](https://github.com/purien/TLS-SE/blob/master/tls_se_device.jpg)
+![TLS-SE Device](https://github.com/purien/TLS-SE/blob/master/sucette_s.jpg)
 
 ### TLS-IM-SE Javacard Board
 This board designed with EAGLE implements a TLS1.3 server using a javacard according to draft TLS-IM and TLS-SE

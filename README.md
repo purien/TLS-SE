@@ -45,6 +45,11 @@ This board designed with EAGLE implements a TLS1.3 server using a javacard accor
 
 ![TLS-IM-SE Javacard Board](https://github.com/purien/TLS-SE/blob/master/tls-im-se-javacard_board.jpg)
 
+### TLS-SE LeMonolith Board
+This board designed with EAGLE implements a TLS1.3 server using a javacard according to IETF draft TLS-SE
+
+![TLS-IM-SE LeMonoltih Board](https://github.com/purien/TLS-SE/blob/master/LeMonolith001.jpg)
+
 ### TLS-IM-SE Javacards I2C Bus Board
 This board designed with EAGLE implements a TLS1.3 server using a set of javacard over I2C bus according to draft TLS-SE
 

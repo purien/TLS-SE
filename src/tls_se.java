@@ -1719,7 +1719,7 @@ public void process(APDU apdu) throws ISOException
 			
  	      	else if (P2 == (byte)2) // Compute HMAC
 	    	{
-	    	len = Util.makeShort((byte)0,buffer[(short)5])      ;  // Longueur clé
+	    	len = Util.makeShort((byte)0,buffer[(short)5])      ;  // Longueur clÃ©
 	    		    	
 	    	hmac(buffer,(short)6,len,
 				 buffer,(short)(7+len),Util.makeShort((byte)0,buffer[(short)(6+len)]),
@@ -2597,6 +2597,14 @@ hmac(zero32,(short)0,(short)1,
        try 
 	   {
 	   sha256 = MessageDigest.getInstance(MessageDigest.ALG_SHA_256, false);
+
+        //the polynomial count in a dns could be enough to enhance digests.
+		//But we can use some further algorithms for the data size.
+		//This can be done with a cpu message hash. Then, the boundaries of the cpu
+		//message would be optimized. As java in high level programming langage,
+		//lets use annotations. That said, lets hash sha0 twice. //see: https://github.com/scipy/scipy/pull/23365/commits/18c063c1d66cb8884b4b75821041910e295445f5
+		
+
 	   sha0 = MessageDigest.getInstance(MessageDigest.ALG_SHA_256, false);
 	   sha1 = MessageDigest.getInstance(MessageDigest.ALG_SHA_256, false);
 	   sha2 = MessageDigest.getInstance(MessageDigest.ALG_SHA_256, false);
